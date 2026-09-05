@@ -12,12 +12,12 @@ on:
   workflow_dispatch:
     inputs:
       leg:
-        description: "baseline (uninstrumented) or instrumented (under chalk/curiosity)"
+        description: baseline (uninstrumented) or instrumented (under chalk/curiosity)
         type: choice
         options: [instrumented, baseline]
         default: instrumented
       profile:
-        description: "CrashOverride chalk profile"
+        description: CrashOverride chalk profile
         type: string
         default: curiosity-tests-racecar
       racecar_run:
@@ -99,7 +99,7 @@ jobs:
       - name: Test
         if: |
           (steps.changes.outputs.src == 'true' ||
-          steps.changes.outputs.test == 'true') &&
+          (github.event_name == 'workflow_dispatch' || steps.changes.outputs.test == 'true')) &&
           runner.os != 'Windows'
         run: |
           pnpm run build
