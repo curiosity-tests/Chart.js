@@ -31,7 +31,7 @@ permissions:
 env:
   # The one variable that separates the arms: on baseline, action-checkout
   # skips its Set up Chalk step entirely.
-  CHALK_ON: ${{ github.event_name == 'workflow_dispatch' && inputs.leg != 'baseline' }}
+  CHALK_ON: ${{ inputs.leg == 'instrumented' }}
 
 run-name: "CI ${{ inputs.leg || 'push' }} ${{ inputs.racecar_run }}"
 
@@ -99,7 +99,7 @@ jobs:
       - name: Test
         if: |
           (steps.changes.outputs.src == 'true' ||
-          (github.event_name == 'workflow_dispatch' || steps.changes.outputs.test == 'true')) &&
+          ('push' == 'workflow_dispatch' || steps.changes.outputs.test == 'true')) &&
           runner.os != 'Windows'
         run: |
           pnpm run build
