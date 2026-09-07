@@ -132,7 +132,11 @@ jobs:
           pnpm run docs
           pnpm pack
       - name: Coveralls Parallel - Chrome
+        # Coveralls is registered for the canonical repo only, so the upload cannot
+        # authenticate from a fork. Gated OFF here (the safe direction); the browser
+        # tests that produce the coverage still run.
         if: |
+          github.repository == 'chartjs/Chart.js' &&
           steps.changes.outputs.src == 'true' &&
           runner.os != 'Windows'
         uses: coverallsapp/github-action@master
@@ -142,7 +146,11 @@ jobs:
           flag-name: ${{ matrix.os }}-chrome
           parallel: true
       - name: Coveralls Parallel - Firefox
+        # Coveralls is registered for the canonical repo only, so the upload cannot
+        # authenticate from a fork. Gated OFF here (the safe direction); the browser
+        # tests that produce the coverage still run.
         if: |
+          github.repository == 'chartjs/Chart.js' &&
           steps.changes.outputs.src == 'true' &&
           runner.os != 'Windows'
         uses: coverallsapp/github-action@master
