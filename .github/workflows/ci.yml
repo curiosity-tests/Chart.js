@@ -96,10 +96,16 @@ jobs:
         run: pnpm run lint
       - name: Build
         run: pnpm run build
+      # racecar: the `inputs.leg != ''` disjunct is OURS, not upstream's. Under
+      # workflow_dispatch dorny/paths-filter has no base ref to diff against, so
+      # steps.changes.outputs.* come back false and this step would silently skip
+      # -- a green run that tested nothing. It keys on the dispatch input rather
+      # than github.event_name, so on a push it is empty and upstream's own
+      # changed-files gating applies unchanged.
       - name: Test
         if: |
           (steps.changes.outputs.src == 'true' ||
-          ('push' == 'workflow_dispatch' || steps.changes.outputs.test == 'true')) &&
+          (inputs.leg != '' || steps.changes.outputs.test == 'true')) &&
           runner.os != 'Windows'
         run: |
           pnpm run build
