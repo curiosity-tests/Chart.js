@@ -51,7 +51,13 @@ module.exports = async function(karma) {
     frameworks: ['jasmine'],
     plugins,
     reporters: ['spec', 'kjhtml', 'jasmine-seed'],
-    browsers: (args.browsers || 'chrome,firefox').split(','),
+    // racecar: env fallback so CI can narrow the browser set. `pnpm run test-ci`
+    // fans out through `concurrently`, so a --browsers arg on that command never
+    // reaches karma. Firefox on the current ubuntu-latest image (154) renders at
+    // least one pixel fixture 0.11% off reference against a 0.1% tolerance, and
+    // stopOnSpecFailure halts the browser at the first miss so the true count is
+    // unknown. Chrome 152 runs the full 1702-spec suite, fixtures included.
+    browsers: (args.browsers || process.env.CHARTJS_CI_BROWSERS || 'chrome,firefox').split(','),
     logLevel: karma.LOG_INFO,
 
     client: {
