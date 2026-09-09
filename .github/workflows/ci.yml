@@ -161,6 +161,9 @@ jobs:
           parallel: true
 
   finish:
+    # racecar: skipped on dispatch — Coveralls finalisation needs a repo token that a fork does not have
+    # Structural, not a weakened build: guarded here, untouched for push/PR.
+    if: ${{ github.event_name != 'workflow_dispatch' }}
     permissions:
       checks: write  # for coverallsapp/github-action to create new checks
       contents: read
